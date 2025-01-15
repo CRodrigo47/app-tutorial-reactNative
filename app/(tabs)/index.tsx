@@ -9,14 +9,17 @@ import EmojiPicker from "@/components/EmojiPicker";
 import { ImageSource } from "expo-image";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const PlaceholderImage = require("@/assets/images/background-image.png");
 
 export default function Index() {
-  const [selectedImage, setSelectedImage] = useState<string>('')
-  const [showAppOptions, setShowAppOptions] = useState<boolean>(false)
-  const [isModalActive, setIsModalActive] = useState<boolean>(false)
-  const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(undefined)
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
+  const [isModalActive, setIsModalActive] = useState<boolean>(false);
+  const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(
+    undefined
+  );
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -27,58 +30,75 @@ export default function Index() {
 
     if (!result.canceled) {
       console.log(result);
-      setSelectedImage(result.assets[0].uri)
-      setShowAppOptions(true)
+      setSelectedImage(result.assets[0].uri);
+      setShowAppOptions(true);
     } else alert("You did not select any image");
   };
-  
+
   const onReset = () => {
     setShowAppOptions(false);
   };
 
-  const onAddSticker = () =>{
-    setIsModalActive(true)
-  }
+  const onAddSticker = () => {
+    setIsModalActive(true);
+  };
 
-  const onModalClose = () =>{
-    setIsModalActive(false)
-  }
+  const onModalClose = () => {
+    setIsModalActive(false);
+  };
 
-  const onSaveImageAsync = async() => {
-
-  }
+  const onSaveImageAsync = async () => {};
   return (
-    <View
-      className="flex-1 items-center justify-center"
-      style={styles.container}
-    >
+    <GestureHandlerRootView style={styles.container}>
       <View className="flex-1 pt-7">
-        <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage}></ImageViewer>
-        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+        <ImageViewer
+          imgSource={PlaceholderImage}
+          selectedImage={selectedImage}
+        ></ImageViewer>
+        {pickedEmoji && (
+          <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />
+        )}
       </View>
       {showAppOptions ? (
         <View className="absolute bottom-20">
           <View className="items-center flex-row">
-            <IconButton icon="refresh" label="Reset" onPress={onReset}/>
-            <CircleButton onPress={onAddSticker}/>
-            <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync}/>
+            <IconButton icon="refresh" label="Reset" onPress={onReset} />
+            <CircleButton onPress={onAddSticker} />
+            <IconButton
+              icon="save-alt"
+              label="Save"
+              onPress={onSaveImageAsync}
+            />
           </View>
         </View>
-      ): (
-      <View className="items-center" style={styles.footerContainer}>
-        <Button label="Choose a photo" theme="primary" onPress={pickImageAsync} />
-        <Button label="Use this photo" onPress={() => setShowAppOptions(true)}/>
-      </View>
+      ) : (
+        <View className="items-center" style={styles.footerContainer}>
+          <Button
+            label="Choose a photo"
+            theme="primary"
+            onPress={pickImageAsync}
+          />
+          <Button
+            label="Use this photo"
+            onPress={() => setShowAppOptions(true)}
+          />
+        </View>
       )}
       <EmojiPicker isVisible={isModalActive} onClose={onModalClose}>
-        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose}></EmojiList>
+        <EmojiList
+          onSelect={setPickedEmoji}
+          onCloseModal={onModalClose}
+        ></EmojiList>
       </EmojiPicker>
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#25292e",
   },
   footerContainer: {
