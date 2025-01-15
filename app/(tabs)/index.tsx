@@ -5,12 +5,18 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import IconButton from "@/components/IconButton";
 import CircleButton from "@/components/CircleButton";
+import EmojiPicker from "@/components/EmojiPicker";
+import { ImageSource } from "expo-image";
+import EmojiList from "@/components/EmojiList";
+import EmojiSticker from "@/components/EmojiSticker";
 
 const PlaceholderImage = require("@/assets/images/background-image.png");
 
 export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false)
+  const [isModalActive, setIsModalActive] = useState<boolean>(false)
+  const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(undefined)
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -31,7 +37,11 @@ export default function Index() {
   };
 
   const onAddSticker = () =>{
+    setIsModalActive(true)
+  }
 
+  const onModalClose = () =>{
+    setIsModalActive(false)
   }
 
   const onSaveImageAsync = async() => {
@@ -44,6 +54,7 @@ export default function Index() {
     >
       <View className="flex-1 pt-7">
         <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage}></ImageViewer>
+        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
       </View>
       {showAppOptions ? (
         <View className="absolute bottom-20">
@@ -59,7 +70,9 @@ export default function Index() {
         <Button label="Use this photo" onPress={() => setShowAppOptions(true)}/>
       </View>
       )}
-      
+      <EmojiPicker isVisible={isModalActive} onClose={onModalClose}>
+        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose}></EmojiList>
+      </EmojiPicker>
     </View>
   );
 }
